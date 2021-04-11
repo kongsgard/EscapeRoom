@@ -9,14 +9,26 @@ public class RotateWheel : MonoBehaviour {
 	bool _coroutineAllowed;
 	int _numberShown;
 
+	static readonly int s_layerMask = 1 << 5; // UI = 5
+
 	private void Start() {
 		_coroutineAllowed = true;
 		_numberShown = 0;
 	}
 
-	private void OnMouseDown() {
-		if (_coroutineAllowed) {
-			StartCoroutine("Rotate");
+	private void Update() {
+		if (Input.GetMouseButtonDown(0)) {
+			if (Physics.Raycast(
+				ray: Camera.main.ScreenPointToRay(Input.mousePosition),
+				hitInfo: out RaycastHit hit,
+				maxDistance: Mathf.Infinity,
+				layerMask: ~s_layerMask)) {
+				if (hit.transform.gameObject == gameObject) {
+					if (_coroutineAllowed) {
+						StartCoroutine("Rotate");
+					}
+				}
+			}
 		}
 	}
 
